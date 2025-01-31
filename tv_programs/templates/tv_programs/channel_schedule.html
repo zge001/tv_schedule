@@ -1,0 +1,39 @@
+{% extends 'films/base.html' %}
+
+{% block content %}
+  <h1>
+    Телепрограмма канала {{channel.name}}
+    {% if user.is_superuser %}
+      <a href="{% url 'tv:tv_program_create' channel.id %}" title="Добавить телепограмму" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
+      <a href="{% url 'tv:tv_channel_update' channel.id %}" class="btn btn-primary btn-block">
+        <i class="bi-pencil-square"></i>
+        Редактировать телеканал
+      </a>
+      <a href="{% url 'tv:tv_channel_delete' channel.id %}" class="btn btn-danger btn-block">
+        <i class="bi-trash"></i>
+        Удалить телеканал
+      </a>
+    {% endif %}
+  </h1>
+  <ol class="list-group list-group">
+    {% for date, programs in channel_programs %}
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div> {{ date }}</div>
+          {% for program in programs %}
+            <ul>
+              <li>
+                {{ program.date|date:"H:i" }}
+                <b>{{ program.title }} </b>
+                <a href="{% url 'tv:tv_program_delete' program.id %}" class="btn btn-danger btn-block" style="align:left;scale:0.5">
+                  <i class="bi-trash"></i>
+                  Удалить телепрограмму
+                </a>
+              </li>
+            </ul>
+          {% endfor %}
+        </div>
+      </li>
+      {% endfor %}
+  </ol>
+{% endblock %}

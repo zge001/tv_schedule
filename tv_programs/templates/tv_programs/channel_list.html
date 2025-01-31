@@ -1,0 +1,55 @@
+{% extends 'films/base.html' %}
+
+{% block content %}
+  <h1>
+    Телепрограмма на сегодня
+    {% if user.is_superuser %}
+      <a href="{% url 'tv:tv_program_create' %}" title="Добавить телепограмму" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
+      <a href="{% url 'tv:tv_channel_create' %}" title="Добавить телепограмму" class="btn btn-primary"><i class="bi bi-fan"></i></a>
+    {% endif %}
+  </h1>
+  <ol class="list-group list-group">
+    {% for channel in channels %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="row row-cols-auto">
+              {% if channel.logo %}
+                <div class="col">
+                  <img src="{{ channel.logo.url }}" alt="{{ channel.name }}" style="width: auto; height: 30px;" class="bg-black"/>
+                </div>
+              {% endif %}
+              <div class="col">
+                {% if user.is_superuser %}
+                  <b>priority: {{ channel.priority }} </b>
+                {% endif %}
+                <a class="fw-bold" href="{% url 'tv:channel_schedule' id=channel.id %}"> {{channel.name}} </a>
+              </div>
+            </div>
+            <ul>
+              {% now "d M Y" as current_date %}
+              {% for program in programs %}
+                {% if program.date|date:"d M Y" == current_date and program.tv_channel == channel %}
+                  <li>
+                    {{ program.date|date:"H:i" }}
+                    <b>{{ program.title }} </b>
+                    {% if program.cover %}
+                      <img src="{{ program.cover.url }}" alt="{{ program.title }}" style="width: auto; height: 30px;" class="bg-black"/>
+                    {% endif %}
+                    <a href="{% url 'tv:tv_program_update' program.id %}" class="btn btn-primary btn-block" style="scale:0.5">
+                      <i class="bi-pencil-square"></i>
+                      Редактировать телепрограмму
+                    </a>
+                    <a href="{% url 'tv:tv_program_delete' program.id %}" class="btn btn-danger btn-block" style="scale:0.5">
+                      <i class="bi-trash"></i>
+                      Удалить телепрограмму
+                    </a>
+                  </li>
+                  
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
+    {% endfor %}
+  </ol>
+{% endblock %}

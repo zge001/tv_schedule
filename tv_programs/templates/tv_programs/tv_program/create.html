@@ -1,0 +1,26 @@
+{% extends 'films/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block breadcrumb %}
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        {% comment %} <a href="{% url 'films:film_list' %}">
+          {{"films:film"|model_verbose_name_plural}}
+        </a> {% endcomment %}
+      </li>
+      <li class="breadcrumb-item active">
+        Новая телепрограмма
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+{% block content %}
+  <h1>Новая телепрограмма</h1>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {{ form.media }}
+    {% bootstrap_button button_type="submit" content="Сохранить" %}
+  </form>
+{% endblock %}
